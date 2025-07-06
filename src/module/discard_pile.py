@@ -2,7 +2,7 @@ class DiscardPile:
     def __init__(self):
         """Creates an empty discard pile."""
         self.cards = []
-        self.is_frozen = False  # Optional: whether the pile is frozen (wilds or jokers on top)
+        self.is_frozen = False 
 
     def add_card(self, card):
         """Adds a card to the top of the discard pile and updates frozen status."""
@@ -24,7 +24,7 @@ class DiscardPile:
         return taken_cards
 
     def freeze(self):
-        """Freezes the pile, making it harder to pick up (as per Canasta rules)."""
+        """Freezes the pile, adding a restriction on picking it up."""
         self.is_frozen = True
 
     def unfreeze(self):

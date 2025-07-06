@@ -40,14 +40,20 @@ class Game:
         """Returns the player whose turn it is."""
         return self.players[self.current_player_index]
 
-    def play_turn(self):
+    def play_turn(self): # This method is a placeholder for actual player logic
+        """Simulates a player's turn in the game."""
         player = self.current_player()
         print(f"\n--- {player.name}'s turn ---")
 
         # 1. Draw a card
-        drawn_card = self.deck.draw()
-        player.hand.add_cards(drawn_card)
-        print(f"{player.name} drew {drawn_card}")
+        # Check if the player can pick up the discard pile
+        if not self.discard_pile.is_empty() and player.can_pick_up_discard(self.discard_pile):
+            player.pick_up_discard_pile(self.discard_pile)
+        else:
+            # Draw a card from the deck
+            drawn_card = self.deck.draw()
+            player.hand.add_cards(drawn_card)
+            print(f"{player.name} drew {drawn_card}")
 
         # 2. Try to form a meld if possible
         rank_counts = {}
@@ -77,6 +83,7 @@ class Game:
     def show_game_state(self):
         """Prints a summary of the current game state."""
         print("\n=== Game State ===")
+        print(f"Discard Pile is {'not' if not self.discard_pile.is_frozen else ''} Frozen: ")
         for player in self.players:
             print(f"{player.name}: {player.show_hand()}")
         print(self.discard_pile)

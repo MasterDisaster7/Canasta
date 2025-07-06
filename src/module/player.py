@@ -15,7 +15,7 @@ class Player:
         self.hand.add_cards(drawn)
 
     def can_pick_up_discard(self, discard_pile):
-        """Checks if the player can pick up the discard pile (basic rule, no frozen pile check)."""
+        """Checks if the player can pick up the discard pile."""
         top_card = discard_pile.top_card()
         if not top_card:
             return False
@@ -23,14 +23,19 @@ class Player:
         # Find cards in hand matching the top card's rank
         matching_cards = [card for card in self.hand.get_all_cards() if card.rank == top_card.rank]
 
-        # Rule: Must have 2 or more matching cards in hand
-        return len(matching_cards) >= 2
+        if discard_pile.is_frozen:
+            return len(matching_cards) >= 2 # Rule: When frozen, must have 2 or more matching cards in hand
+        else:
+            # Rule: When not frozen, must have at least 1 matching card and 1 wild, or two matching cards in hand
+            wild_cards = [card for card in self.hand.get_all_cards() if card.is_wild()]
+            return (len(matching_cards) >= 2) or (len(matching_cards) >= 1 and len(wild_cards) >= 1)
 
     def pick_up_discard_pile(self, discard_pile):
         """Adds the entire discard pile to the hand."""
         pile_cards = discard_pile.take_pile()
         self.hand.add_cards(pile_cards)
         print(f"{self.name} picked up the discard pile with {len(pile_cards)} cards.")
+        # TODO force meld after picking up discard
 
     def discard(self, card, discard_pile):
         """Discard a card from hand to the discard pile."""
