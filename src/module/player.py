@@ -1,12 +1,13 @@
 from .hand import Hand
 from .meld import Meld
 
+
 class Player:
     def __init__(self, name):
         """Creates a player with a name and an empty hand."""
         self.name = name
         self.hand = Hand()
-        self.melds = []  # List of lists of Cards (each meld is a list of cards)
+        self.team = None  # Set when assigning teams
         self.has_gone_out = False
 
     def draw_from_deck(self, deck, count=1):
@@ -21,14 +22,19 @@ class Player:
             return False
 
         # Find cards in hand matching the top card's rank
-        matching_cards = [card for card in self.hand.get_all_cards() if card.rank == top_card.rank]
+        matching_cards = [
+            card for card in self.hand.get_all_cards() if card.rank == top_card.rank
+        ]
 
         if discard_pile.is_frozen:
-            return len(matching_cards) >= 2 # Rule: When frozen, must have 2 or more matching cards in hand
+            # Rule: When frozen, must have 2 or more matching cards in hand
+            return len(matching_cards) >= 2
         else:
             # Rule: When not frozen, must have at least 1 matching card and 1 wild, or two matching cards in hand
             wild_cards = [card for card in self.hand.get_all_cards() if card.is_wild()]
-            return (len(matching_cards) >= 2) or (len(matching_cards) >= 1 and len(wild_cards) >= 1)
+            return (len(matching_cards) >= 2) or (
+                len(matching_cards) >= 1 and len(wild_cards) >= 1
+            )
 
     def pick_up_discard_pile(self, discard_pile):
         """Adds the entire discard pile to the hand."""
@@ -47,7 +53,7 @@ class Player:
         for card in cards:
             self.hand.remove_card(card)
         new_meld = Meld(cards)
-        self.melds.append(new_meld)
+        self.team.melds.append(new_meld)
         print(f"{self.name} formed a meld: {new_meld}")
 
     def show_hand(self):
@@ -56,7 +62,7 @@ class Player:
 
     def show_melds(self):
         """Returns a string representation of the player's melds."""
-        return [', '.join(str(card) for card in meld) for meld in self.melds]
+        return [str(meld) for meld in self.team.melds]
 
     def go_out(self):
         """Marks the player as having gone out."""

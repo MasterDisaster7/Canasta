@@ -1,6 +1,9 @@
-from module.game import Game
+from module.match import Match
 
-game = Game(["Ruud", "Mariska", "Menno", "Lobke"])
+match = Match(["Ruud", "Mariska", "Menno", "Lobke"])
+
+match.start_new_game()  # Start a new game
+game = match.games[0]  # Assuming the first game is the one we want to play
 
 # Play 3 rounds (just to test)
 for round_num in range(3):

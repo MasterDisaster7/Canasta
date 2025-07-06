@@ -7,3 +7,4 @@ It is meant to become a project where people can build their own players with cu
 
 ```bash
 pip install -r requirements.txt
+```

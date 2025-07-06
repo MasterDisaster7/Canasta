@@ -1,22 +1,12 @@
 from .deck import Deck
 from .discard_pile import DiscardPile
-from .player import Player
+
 
 class Game:
-    def __init__(self, player_names):
-        """Initializes the game with 4 players (two teams)."""
-        
-        if len(player_names) != 4:
-            raise ValueError("Canasta requires exactly 4 players.")
+    def __init__(self, players):
+        """Initializes the game round."""
 
-        # Create players
-        self.players = [Player(name) for name in player_names]
-
-        # Divide players into two teams
-        self.teams = {
-            "Team A": [self.players[0], self.players[2]],
-            "Team B": [self.players[1], self.players[3]]
-        }
+        self.players = players
 
         # Create deck and discard pile
         self.deck = Deck()
@@ -41,7 +31,7 @@ class Game:
         """Returns the player whose turn it is."""
         return self.players[self.current_player_index]
 
-    def play_turn(self): # This method is a placeholder for actual player logic
+    def play_turn(self):  # This method is a placeholder for actual player logic
         """Simulates a player's turn in the game."""
         player = self.current_player()
         print(f"\n--- {player.name}'s turn ---")
@@ -64,7 +54,9 @@ class Game:
         # If there are 3+ of a rank, form a meld
         for rank, count in rank_counts.items():
             if count >= 3:
-                meld_cards = [card for card in player.hand.get_all_cards() if card.rank == rank][:count]
+                meld_cards = [
+                    card for card in player.hand.get_all_cards() if card.rank == rank
+                ][:count]
                 player.form_meld(meld_cards)
                 break  # Meld only once per turn (for simplicity)
 
@@ -84,10 +76,14 @@ class Game:
     def show_game_state(self):
         """Prints a summary of the current game state."""
         print("\n=== Game State ===")
-        print(f"Discard Pile is {'not' if not self.discard_pile.is_frozen else ''} Frozen: ")
+        print(
+            f"Discard Pile is {'not' if not self.discard_pile.is_frozen else ''} Frozen: "
+        )
         for player in self.players:
             print(f"{player.name}: {player.show_hand()}")
         print(self.discard_pile)
+        for player in self.players:
+            print(f"{player.name}'s melds: {player.show_melds()}")
 
     def is_game_over(self):
         """Checks if any player has gone out (simplified end condition)."""
