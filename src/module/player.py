@@ -34,7 +34,6 @@ class Player:
         """Adds the entire discard pile to the hand."""
         pile_cards = discard_pile.take_pile()
         self.hand.add_cards(pile_cards)
-        print(f"{self.name} picked up the discard pile with {len(pile_cards)} cards.")
         # TODO force meld after picking up discard
 
     def discard(self, card, discard_pile):

@@ -5,6 +5,7 @@ from .player import Player
 class Game:
     def __init__(self, player_names):
         """Initializes the game with 4 players (two teams)."""
+        
         if len(player_names) != 4:
             raise ValueError("Canasta requires exactly 4 players.")
 
@@ -47,7 +48,7 @@ class Game:
 
         # 1. Draw a card
         # Check if the player can pick up the discard pile
-        if not self.discard_pile.is_empty() and player.can_pick_up_discard(self.discard_pile):
+        if player.can_pick_up_discard(self.discard_pile):
             player.pick_up_discard_pile(self.discard_pile)
         else:
             # Draw a card from the deck
