@@ -41,7 +41,6 @@ class Game:
         return self.players[self.current_player_index]
 
     def play_turn(self):
-        """Simulates a simple turn for the current player."""
         player = self.current_player()
         print(f"\n--- {player.name}'s turn ---")
 
@@ -50,14 +49,24 @@ class Game:
         player.hand.add_cards(drawn_card)
         print(f"{player.name} drew {drawn_card}")
 
-        # 2. TODO: Add meld decision logic here
+        # 2. Try to form a meld if possible
+        rank_counts = {}
+        for card in player.hand.get_all_cards():
+            rank_counts[card.rank] = rank_counts.get(card.rank, 0) + 1
 
-        # 3. Discard the first card in hand for simplicity
-        discard_card = player.hand.get_all_cards()[0]
-        player.discard(discard_card, self.discard_pile)
-        print(f"{player.name} discarded {discard_card}")
+        # If there are 3+ of a rank, form a meld
+        for rank, count in rank_counts.items():
+            if count >= 3:
+                meld_cards = [card for card in player.hand.get_all_cards() if card.rank == rank][:count]
+                player.form_meld(meld_cards)
+                break  # Meld only once per turn (for simplicity)
 
-        # Advance to next player
+        # 3. Discard a card (the first one for now)
+        if player.hand.get_all_cards():
+            discard_card = player.hand.get_all_cards()[0]
+            player.discard(discard_card, self.discard_pile)
+            print(f"{player.name} discarded {discard_card}")
+
         self.next_player()
 
     def play_round(self):

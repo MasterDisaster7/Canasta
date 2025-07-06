@@ -1,4 +1,5 @@
 from .hand import Hand
+from .meld import Meld
 
 class Player:
     def __init__(self, name):
@@ -13,6 +14,24 @@ class Player:
         drawn = deck.draw(count)
         self.hand.add_cards(drawn)
 
+    def can_pick_up_discard(self, discard_pile):
+        """Checks if the player can pick up the discard pile (basic rule, no frozen pile check)."""
+        top_card = discard_pile.top_card()
+        if not top_card:
+            return False
+
+        # Find cards in hand matching the top card's rank
+        matching_cards = [card for card in self.hand.get_all_cards() if card.rank == top_card.rank]
+
+        # Rule: Must have 2 or more matching cards in hand
+        return len(matching_cards) >= 2
+
+    def pick_up_discard_pile(self, discard_pile):
+        """Adds the entire discard pile to the hand."""
+        pile_cards = discard_pile.take_pile()
+        self.hand.add_cards(pile_cards)
+        print(f"{self.name} picked up the discard pile with {len(pile_cards)} cards.")
+
     def discard(self, card, discard_pile):
         """Discard a card from hand to the discard pile."""
         discarded = self.hand.discard_card(card)
@@ -20,11 +39,12 @@ class Player:
         return discarded
 
     def form_meld(self, cards):
-        """Forms a meld from specified cards in the hand."""
-        # Remove the cards from the hand
+        """Creates a meld from cards in the hand (no rules checked yet)."""
         for card in cards:
             self.hand.remove_card(card)
-        self.melds.append(cards)
+        new_meld = Meld(cards)
+        self.melds.append(new_meld)
+        print(f"{self.name} formed a meld: {new_meld}")
 
     def show_hand(self):
         """Returns the cards in the hand as a string."""
