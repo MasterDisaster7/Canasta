@@ -42,6 +42,8 @@ class Player:
         self.hand.add_cards(pile_cards)
         # TODO force meld after picking up discard
 
+        # git test 
+
     def discard(self, card, discard_pile):
         """Discard a card from hand to the discard pile."""
         discarded = self.hand.discard_card(card)
